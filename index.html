@@ -399,7 +399,39 @@
             images: [],
             selectedCard: null,
             mainColor: '#4f46e5',
-            oddColor: '#ef4444'
+            oddColor: '#ef4444',
+            questions: [
+                {
+                    type: 'colors',
+                    mainColor: '#4f46e5',
+                    oddColor: '#ef4444'
+                },
+                {
+                    type: 'colors',
+                    mainColor: '#10b981',
+                    oddColor: '#f59e0b'
+                },
+                {
+                    type: 'images',
+                    images: [
+                        'https://via.placeholder.com/150/4f46e5/ffffff?text=Image+1',
+                        'https://via.placeholder.com/150/ef4444/ffffff?text=Image+2'
+                    ]
+                },
+                {
+                    type: 'images',
+                    images: [
+                        'https://via.placeholder.com/150/10b981/ffffff?text=Image+1',
+                        'https://via.placeholder.com/150/f59e0b/ffffff?text=Image+2'
+                    ]
+                },
+                {
+                    type: 'colors',
+                    mainColor: '#3b82f6',
+                    oddColor: '#f43f5e'
+                }
+            ],
+            currentQuestionIndex: 0
         };
 
         // Initialize Game
@@ -407,17 +439,23 @@
             const grid = document.getElementById('gameGrid');
             grid.innerHTML = '';
             
+            const currentQuestion = gameState.questions[gameState.currentQuestionIndex];
+            gameState.mode = currentQuestion.type;
+
             if (gameState.mode === 'colors') {
+                gameState.mainColor = currentQuestion.mainColor;
+                gameState.oddColor = currentQuestion.oddColor;
                 initColorGame(grid);
             } else {
+                gameState.images = currentQuestion.images;
                 initImageGame(grid);
             }
         }
 
         // Initialize Color Game
         function initColorGame(grid) {
-            const mainColor = document.getElementById('mainColor').value;
-            const oddColor = document.getElementById('oddColor').value;
+            const mainColor = gameState.mainColor;
+            const oddColor = gameState.oddColor;
             const oddPosition = Math.floor(Math.random() * 4);
             
             for (let i = 0; i < 4; i++) {
@@ -438,7 +476,7 @@
                     const card = createCard();
                     const img = document.createElement('img');
                     const imageIndex = i === oddPosition ? 1 : 0;
-                    img.src = URL.createObjectURL(gameState.images[imageIndex]);
+                    img.src = gameState.images[imageIndex];
                     img.alt = `Card ${i + 1}`;
                     card.appendChild(img);
                     card.setAttribute('data-correct', i === oddPosition ? 'true' : 'false');
@@ -467,6 +505,9 @@
             
             // Delay before resetting
             setTimeout(() => {
+                if (isCorrect) {
+                    gameState.currentQuestionIndex = (gameState.currentQuestionIndex + 1) % gameState.questions.length;
+                }
                 resetGame();
             }, 1500);
         }
