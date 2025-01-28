@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odd One Out Game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.umd.js"></script>
+    <title>Educational Odd One Out Game</title>
     <style>
-    /* Previous styles remain the same */
-    * {
+        /* Reset and Base Styles */
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -17,85 +16,106 @@
         body {
             background-color: #f5f5f5;
             min-height: 100vh;
+            color: #333;
         }
 
+        /* Header Styles */
         .header {
             background: white;
-            padding: 1rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
         }
 
         .title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #333;
+            color: #2563eb;
         }
 
         .settings-btn {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
         }
 
+        .settings-btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Game Container Styles */
         .game-container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 2rem auto;
             padding: 1rem;
         }
 
+        /* Grid Layout */
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 640px) {
             .grid {
                 grid-template-columns: repeat(4, 1fr);
             }
         }
 
+        /* Card Styles */
         .card {
             aspect-ratio: 1;
-            border-radius: 0.5rem;
+            border-radius: 1rem;
             cursor: pointer;
-            transition: transform 0.2s;
-            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
             overflow: hidden;
             position: relative;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .card:hover {
-            transform: scale(1.02);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .card.selected {
-            border-color: #3b82f6;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
         }
 
         .card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 0.75rem;
         }
 
+        /* Settings Modal Styles */
         .settings-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             justify-content: center;
             align-items: center;
             padding: 1rem;
             z-index: 1000;
+            backdrop-filter: blur(4px);
         }
 
         .settings-modal.active {
@@ -104,19 +124,27 @@
 
         .modal-content {
             background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
+            padding: 2rem;
+            border-radius: 1rem;
             width: 100%;
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
         }
 
         .close-btn {
@@ -124,83 +152,154 @@
             border: none;
             cursor: pointer;
             padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
         }
 
+        .close-btn:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* Tab Navigation Styles */
         .tab-buttons {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            background: #f3f4f6;
+            border-radius: 0.75rem;
         }
 
         .tab-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border: none;
-            background: #f3f4f6;
-            border-radius: 0.25rem;
+            border-radius: 0.5rem;
             cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .tab-btn:hover {
+            background: rgba(37, 99, 235, 0.1);
         }
 
         .tab-btn.active {
-            background: #3b82f6;
+            background: #2563eb;
             color: white;
         }
 
+        /* Tab Content Styles */
         .tab-content {
             display: none;
+            padding: 1rem;
         }
 
         .tab-content.active {
             display: block;
         }
 
+        .tab-content h3 {
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        /* Form Controls */
+        .color-picker-container {
+            margin-bottom: 1.5rem;
+        }
+
         .color-picker {
             width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .color-picker:focus {
+            border-color: #2563eb;
+            outline: none;
         }
 
         .image-upload {
             width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            border: 2px dashed #ccc;
-            border-radius: 0.25rem;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
             text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
+        .image-upload:hover {
+            border-color: #2563eb;
+            background: #f8fafc;
+        }
+
+        .image-upload input[type="file"] {
+            display: none;
+        }
+
+        .upload-text {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Button Styles */
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 0.25rem;
-            background: #3b82f6;
+            border-radius: 0.5rem;
+            background: #2563eb;
             color: white;
             cursor: pointer;
             width: 100%;
             margin-top: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
 
         .btn:hover {
-            background: #2563eb;
+            background: #1d4ed8;
+            transform: translateY(-1px);
         }
 
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Feedback Message Styles */
         .feedback {
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             padding: 1rem;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             display: none;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .feedback.correct {
-            background: #d1fae5;
-            color: #065f46;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
         }
 
         .feedback.incorrect {
             background: #fee2e2;
             color: #991b1b;
+            border: 1px solid #fecaca;
         }
 
+        /* Icon Wrapper */
         .icon-wrapper {
             display: flex;
             align-items: center;
@@ -208,12 +307,25 @@
             width: 24px;
             height: 24px;
         }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
     </style>
 </head>
 <body>
+    <!-- Header Section -->
     <header class="header">
         <h1 class="title">Odd One Out</h1>
-        <button class="settings-btn" onclick="toggleSettings()">
+        <button class="settings-btn" onclick="toggleSettings()" aria-label="Open Settings">
             <div class="icon-wrapper">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
@@ -223,16 +335,18 @@
         </button>
     </header>
 
+    <!-- Main Game Container -->
     <main class="game-container">
         <div class="grid" id="gameGrid"></div>
-        <div class="feedback" id="feedback"></div>
+        <div class="feedback" id="feedback" role="alert"></div>
     </main>
 
-    <div class="settings-modal" id="settingsModal">
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal" role="dialog" aria-label="Settings">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Settings</h2>
-                <button class="close-btn" onclick="toggleSettings()">
+                <h2>Game Settings</h2>
+                <button class="close-btn" onclick="toggleSettings()" aria-label="Close Settings">
                     <div class="icon-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 6 6 18"/>
@@ -241,23 +355,37 @@
                     </div>
                 </button>
             </div>
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('colors')">Colors</button>
-                <button class="tab-btn" onclick="switchTab('images')">Images</button>
+
+            <!-- Tab Navigation -->
+            <div class="tab-buttons" role="tablist">
+                <button class="tab-btn active" onclick="switchTab('colors')" role="tab" aria-selected="true">
+                    Colors Mode
+                </button>
+                <button class="tab-btn" onclick="switchTab('images')" role="tab" aria-selected="false">
+                    Images Mode
+                </button>
             </div>
-            <div class="tab-content active" id="colorsTab">
-                <h3>Set Colors</h3>
-                <input type="color" class="color-picker" value="#ff0000" id="mainColor">
-                <label>Main Color</label>
-                <input type="color" class="color-picker" value="#00ff00" id="oddColor">
-                <label>Odd Color</label>
+
+            <!-- Color Settings Tab -->
+            <div class="tab-content active" id="colorsTab" role="tabpanel">
+                <h3>Color Settings</h3>
+                <div class="color-picker-container">
+                    <label for="mainColor">Main Color (3 items)</label>
+                    <input type="color" class="color-picker" id="mainColor" value="#4f46e5">
+                    
+                    <label for="oddColor">Odd Color (1 item)</label>
+                    <input type="color" class="color-picker" id="oddColor" value="#ef4444">
+                </div>
                 <button class="btn" onclick="applyColors()">Apply Colors</button>
             </div>
-            <div class="tab-content" id="imagesTab">
-                <h3>Upload Images</h3>
-                <div class="image-upload" id="imageUpload">
-                    <p>Drop images here or click to upload</p>
-                    <input type="file" multiple accept="image/*" onchange="handleImageUpload(event)">
+
+            <!-- Image Settings Tab -->
+            <div class="tab-content" id="imagesTab" role="tabpanel">
+                <h3>Image Settings</h3>
+                <div class="image-upload" id="imageUpload" onclick="triggerFileInput()">
+                    <p class="upload-text">Drop images here or click to upload</p>
+                    <p class="upload-text">(Select at least 2 images)</p>
+                    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleImageUpload(event)">
                 </div>
                 <button class="btn" onclick="applyImages()">Apply Images</button>
             </div>
@@ -265,118 +393,226 @@
     </div>
 
     <script>
-        // Game state
-        let gameMode = 'colors';
-        let images = [];
-        let selectedCard = null;
+        // Game State Management
+        const gameState = {
+            mode: 'colors',
+            images: [],
+            selectedCard: null,
+            mainColor: '#4f46e5',
+            oddColor: '#ef4444'
+        };
 
-        // Initialize game with colors
+        // Initialize Game
         function initGame() {
             const grid = document.getElementById('gameGrid');
             grid.innerHTML = '';
             
-            if (gameMode === 'colors') {
-                const mainColor = document.getElementById('mainColor').value;
-                const oddColor = document.getElementById('oddColor').value;
-                
-                // Create 4 cards, one with odd color
+            if (gameState.mode === 'colors') {
+                initColorGame(grid);
+            } else {
+                initImageGame(grid);
+            }
+        }
+
+        // Initialize Color Game
+        function initColorGame(grid) {
+            const mainColor = document.getElementById('mainColor').value;
+            const oddColor = document.getElementById('oddColor').value;
+            const oddPosition = Math.floor(Math.random() * 4);
+            
+            for (let i = 0; i < 4; i++) {
+                const card = createCard();
+                card.style.backgroundColor = i === oddPosition ? oddColor : mainColor;
+                card.setAttribute('data-correct', i === oddPosition ? 'true' : 'false');
+                card.onclick = () => handleCardClick(card);
+                grid.appendChild(card);
+            }
+        }
+
+        // Initialize Image Game
+        function initImageGame(grid) {
+            if (gameState.images.length >= 2) {
                 const oddPosition = Math.floor(Math.random() * 4);
                 
                 for (let i = 0; i < 4; i++) {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.style.background = i === oddPosition ? oddColor : mainColor;
-                    card.onclick = () => checkAnswer(i === oddPosition, card);
+                    const card = createCard();
+                    const img = document.createElement('img');
+                    const imageIndex = i === oddPosition ? 1 : 0;
+                    img.src = URL.createObjectURL(gameState.images[imageIndex]);
+                    img.alt = `Card ${i + 1}`;
+                    card.appendChild(img);
+                    card.setAttribute('data-correct', i === oddPosition ? 'true' : 'false');
+                    card.onclick = () => handleCardClick(card);
                     grid.appendChild(card);
                 }
             } else {
-                // Image mode implementation
-                if (images.length >= 4) {
-                    const oddPosition = Math.floor(Math.random() * 4);
-                    
-                    for (let i = 0; i < 4; i++) {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        const img = document.createElement('img');
-                        img.src = URL.createObjectURL(i === oddPosition ? images[1] : images[0]);
-                        card.appendChild(img);
-                        card.onclick = () => checkAnswer(i === oddPosition, card);
-                        grid.appendChild(card);
-                    }
-                }
+                console.error('Not enough images to initialize the game.');
             }
         }
 
-        // Check if answer is correct
-        function checkAnswer(isCorrect, card) {
-            const feedback = document.getElementById('feedback');
-            const cards = document.querySelectorAll('.card');
+        // Create Card Element
+        function createCard() {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            return card;
+        }
+
+        // Handle Card Click
+        function handleCardClick(card) {
+            const isCorrect = card.getAttribute('data-correct') === 'true';
+            showFeedback(isCorrect);
+            highlightCard(card);
             
-            cards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            
-            feedback.style.display = 'block';
-            if (isCorrect) {
-                feedback.textContent = 'Correct! Well done!';
-                feedback.className = 'feedback correct';
-            } else {
-                feedback.textContent = 'Try again!';
-                feedback.className = 'feedback incorrect';
-            }
-            
+            // Delay before resetting
             setTimeout(() => {
-                feedback.style.display = 'none';
-                initGame();
+                resetGame();
             }, 1500);
         }
 
-        // Toggle settings modal
+        // Show Feedback
+        function showFeedback(isCorrect) {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'block';
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.textContent = isCorrect ? 'Correct! Well done! 🎉' : 'Try again! 🔄';
+        }
+
+        // Highlight Selected Card
+        function highlightCard(card) {
+            if (gameState.selectedCard) {
+                gameState.selectedCard.classList.remove('selected');
+            }
+            card.classList.add('selected');
+            gameState.selectedCard = card;
+        }
+
+        // Reset Game
+        function resetGame() {
+            const feedback = document.getElementById('feedback');
+            feedback.style.display = 'none';
+            
+            if (gameState.selectedCard) {
+                gameState.selectedCard.classList.remove('selected');
+                gameState.selectedCard = null;
+            }
+            
+            initGame();
+        }
+
+        // Toggle Settings Modal
         function toggleSettings() {
             const modal = document.getElementById('settingsModal');
             modal.classList.toggle('active');
+            
+            if (modal.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
         }
 
-        // Switch between color and image tabs
+        // Switch Between Tabs
         function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            const activeBtn = document.querySelector(`[onclick="switchTab('${tab}')"]`);
+            activeBtn.classList.add('active');
+            activeBtn.setAttribute('aria-selected', 'true');
+            
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
             document.getElementById(`${tab}Tab`).classList.add('active');
-            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
         }
 
-        // Apply color settings
+        // Apply Color Settings
         function applyColors() {
-            gameMode = 'colors';
+            gameState.mode = 'colors';
+            gameState.mainColor = document.getElementById('mainColor').value;
+            gameState.oddColor = document.getElementById('oddColor').value;
             toggleSettings();
             initGame();
         }
 
-        // Handle image uploads
+        // Trigger File Input
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+
+        // Handle Image Upload
         function handleImageUpload(event) {
-            images = Array.from(event.target.files);
-            if (images.length >= 2) {
-                document.getElementById('imageUpload').style.borderColor = '#3b82f6';
+            const files = Array.from(event.target.files);
+            const validFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (validFiles.length >= 2) {
+                gameState.images = validFiles;
+                const uploadArea = document.getElementById('imageUpload');
+                uploadArea.style.borderColor = '#2563eb';
+                uploadArea.querySelector('.upload-text').textContent = `${validFiles.length} images selected`;
+                console.log('Uploaded Images:', gameState.images);
+            } else {
+                alert('Please select at least 2 images');
+                event.target.value = '';
             }
         }
 
-        // Apply image settings
+        // Apply Image Settings
         function applyImages() {
-            if (images.length >= 2) {
-                gameMode = 'images';
+            if (gameState.images.length >= 2) {
+                gameState.mode = 'images';
                 toggleSettings();
                 initGame();
             } else {
-                alert('Please upload at least 2 images');
+                alert('Please upload at least 2 images before applying');
             }
         }
 
-        // Initialize game on load
-        initGame();
+        // Handle Keyboard Navigation
+        function handleKeyPress(event) {
+            if (event.key === 'Escape' && document.getElementById('settingsModal').classList.contains('active')) {
+                toggleSettings();
+            }
+        }
+
+        // Add Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+            document.addEventListener('keydown', handleKeyPress);
+        });
+
+        // Handle Drag and Drop for Images
+        const imageUpload = document.getElementById('imageUpload');
+        
+        imageUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            imageUpload.style.borderColor = '#2563eb';
+            imageUpload.style.backgroundColor = '#f8fafc';
+        });
+
+        imageUpload.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            imageUpload.style.borderColor = '#cbd5e1';
+            imageUpload.style.backgroundColor = 'transparent';
+        });
+
+        imageUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files);
+            
+            if (files.length >= 2 && files.every(file => file.type.startsWith('image/'))) {
+                gameState.images = files;
+                imageUpload.style.borderColor = '#2563eb';
+                imageUpload.querySelector('.upload-text').textContent = `${files.length} images selected`;
+            } else {
+                alert('Please drop at least 2 image files');
+            }
+            
+            imageUpload.style.backgroundColor = 'transparent';
+        });
     </script>
 </body>
-  </html>
+</html>
