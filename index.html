@@ -3,657 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Odd One Out Game</title>
+    <title>Pick the Odd One Out!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
         body {
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            color: #333;
-        }
-
-        /* Header Styles */
-        .header {
-            background: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
-        }
-
-        .title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2563eb;
-        }
-
-        .settings-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-        }
-
-        .settings-btn:hover {
-            background-color: #f3f4f6;
-        }
-
-        /* Game Container Styles */
-        .game-container {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f9ff;
         }
-
-        /* Grid Layout */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-        }
-
-        @media (min-width: 640px) {
-            .grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        /* Card Styles */
-        .card {
-            aspect-ratio: 1;
-            border-radius: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 3px solid transparent;
-            overflow: hidden;
-            position: relative;
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .card.selected {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
-        }
-
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 0.75rem;
-        }
-
-        /* Settings Modal Styles */
-        .settings-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+        
+        .page {
             display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
         }
-
-        .settings-modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .modal-header h2 {
-            font-size: 1.5rem;
-            color: #1f2937;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s;
-        }
-
-        .close-btn:hover {
-            background-color: #f3f4f6;
-        }
-
-        /* Tab Navigation Styles */
-        .tab-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding: 0.5rem;
-            background: #f3f4f6;
-            border-radius: 0.75rem;
-        }
-
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-            flex: 1;
-        }
-
-        .tab-btn:hover {
-            background: rgba(37, 99, 235, 0.1);
-        }
-
-        .tab-btn.active {
-            background: #2563eb;
-            color: white;
-        }
-
-        /* Tab Content Styles */
-        .tab-content {
-            display: none;
-            padding: 1rem;
-        }
-
-        .tab-content.active {
+        
+        .active {
             display: block;
         }
-
-        .tab-content h3 {
-            margin-bottom: 1rem;
-            color: #1f2937;
+        
+        .question-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            gap: 10px;
+            position: relative;
         }
-
-        /* Form Controls */
-        .color-picker-container {
-            margin-bottom: 1.5rem;
-        }
-
-        .color-picker {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
+        
+        .color-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: transform 0.3s;
+            border: 3px solid transparent;
+            position: relative;
         }
-
-        .color-picker:focus {
-            border-color: #2563eb;
-            outline: none;
+        
+        .color-box:hover {
+            transform: scale(1.1);
         }
-
-        .image-upload {
-            width: 100%;
-            padding: 2rem;
-            margin-bottom: 1rem;
-            border: 2px dashed #cbd5e1;
-            border-radius: 0.75rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .image-upload:hover {
-            border-color: #2563eb;
-            background: #f8fafc;
-        }
-
-        .image-upload input[type="file"] {
-            display: none;
-        }
-
-        .upload-text {
-            color: #64748b;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Button Styles */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            background: #2563eb;
-            color: white;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .btn:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        /* Feedback Message Styles */
-        .feedback {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            display: none;
-            font-weight: 500;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .feedback.correct {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #86efac;
-        }
-
-        .feedback.incorrect {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        /* Icon Wrapper */
-        .icon-wrapper {
+        
+        .feedback-mark {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
+            color: white;
+            font-weight: bold;
         }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
+        
+        .correct-mark {
+            background: #4CAF50;
+        }
+        
+        .wrong-mark {
+            background: #f44336;
+        }
+        
+        .create-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .teacher-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question-block {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        .preview-row {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .preview-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #ddd;
+        }
+        
+        .correct-indicator {
+            color: #4CAF50;
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="header">
-        <h1 class="title">Odd One Out</h1>
-        <button class="settings-btn" onclick="toggleSettings()" aria-label="Open Settings">
-            <div class="icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                </svg>
+    <!-- Game Page -->
+    <div id="gamePage" class="page active">
+        <h1>Pick the Odd One Out! 🎮</h1>
+        
+        <div id="gameContainer">
+            <!-- Default color questions -->
+            <div class="question-row">
+                <div class="color-box" style="background: #FF0000" onclick="checkAnswer(this, 0, 2)"></div>
+                <div class="color-box" style="background: #FF0000" onclick="checkAnswer(this, 0, 2)"></div>
+                <div class="color-box" style="background: #FF4500" onclick="checkAnswer(this, 0, 2)"></div>
+                <div class="color-box" style="background: #FF0000" onclick="checkAnswer(this, 0, 2)"></div>
             </div>
-        </button>
-    </header>
-
-    <!-- Main Game Container -->
-    <main class="game-container">
-        <div class="grid" id="gameGrid"></div>
-        <div class="feedback" id="feedback" role="alert"></div>
-    </main>
-
-    <!-- Settings Modal -->
-    <div class="settings-modal" id="settingsModal" role="dialog" aria-label="Settings">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Game Settings</h2>
-                <button class="close-btn" onclick="toggleSettings()" aria-label="Close Settings">
-                    <div class="icon-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18"/>
-                            <path d="m6 6 12 12"/>
-                        </svg>
-                    </div>
-                </button>
+            
+            <div class="question-row">
+                <div class="color-box" style="background: #0000FF" onclick="checkAnswer(this, 1, 3)"></div>
+                <div class="color-box" style="background: #0000FF" onclick="checkAnswer(this, 1, 3)"></div>
+                <div class="color-box" style="background: #0000FF" onclick="checkAnswer(this, 1, 3)"></div>
+                <div class="color-box" style="background: #000080" onclick="checkAnswer(this, 1, 3)"></div>
             </div>
-
-            <!-- Tab Navigation -->
-            <div class="tab-buttons" role="tablist">
-                <button class="tab-btn active" onclick="switchTab('colors')" role="tab" aria-selected="true">
-                    Colors Mode
-                </button>
-                <button class="tab-btn" onclick="switchTab('images')" role="tab" aria-selected="false">
-                    Images Mode
-                </button>
+            
+            <div class="question-row">
+                <div class="color-box" style="background: #FFFF00" onclick="checkAnswer(this, 2, 1)"></div>
+                <div class="color-box" style="background: #FFD700" onclick="checkAnswer(this, 2, 1)"></div>
+                <div class="color-box" style="background: #FFFF00" onclick="checkAnswer(this, 2, 1)"></div>
+                <div class="color-box" style="background: #FFFF00" onclick="checkAnswer(this, 2, 1)"></div>
             </div>
-
-            <!-- Color Settings Tab -->
-            <div class="tab-content active" id="colorsTab" role="tabpanel">
-                <h3>Color Settings</h3>
-                <div class="color-picker-container">
-                    <label for="mainColor">Main Color (3 items)</label>
-                    <input type="color" class="color-picker" id="mainColor" value="#4f46e5">
-                    
-                    <label for="oddColor">Odd Color (1 item)</label>
-                    <input type="color" class="color-picker" id="oddColor" value="#ef4444">
-                </div>
-                <button class="btn" onclick="applyColors()">Apply Colors</button>
+            
+            <div class="question-row">
+                <div class="color-box" style="background: #00FF00" onclick="checkAnswer(this, 3, 2)"></div>
+                <div class="color-box" style="background: #00FF00" onclick="checkAnswer(this, 3, 2)"></div>
+                <div class="color-box" style="background: #32CD32" onclick="checkAnswer(this, 3, 2)"></div>
+                <div class="color-box" style="background: #00FF00" onclick="checkAnswer(this, 3, 2)"></div>
             </div>
+        </div>
 
-            <!-- Image Settings Tab -->
-            <div class="tab-content" id="imagesTab" role="tabpanel">
-                <h3>Image Settings</h3>
-                <div class="image-upload" id="imageUpload" onclick="triggerFileInput()">
-                    <p class="upload-text">Drop images here or click to upload</p>
-                    <p class="upload-text">(Select at least 2 images)</p>
-                    <input type="file" id="fileInput" multiple accept="image/*" onchange="handleImageUpload(event)">
-                </div>
-                <button class="btn" onclick="applyImages()">Apply Images</button>
-            </div>
+        <div class="create-section">
+            <button onclick="showTeacherPage()">Create New Activity</button>
         </div>
     </div>
 
-    <script>
-        // Game State Management
-        const gameState = {
-            mode: 'colors',
-            images: [],
-            selectedCard: null,
-            mainColor: '#4f46e5',
-            oddColor: '#ef4444',
-            questions: [
-                {
-                    type: 'colors',
-                    mainColor: '#4f46e5',
-                    oddColor: '#ef4444'
-                },
-                {
-                    type: 'colors',
-                    mainColor: '#10b981',
-                    oddColor: '#f59e0b'
-                },
-                {
-                    type: 'images',
-                    images: [
-                        'https://via.placeholder.com/150/4f46e5/ffffff?text=Image+1',
-                        'https://via.placeholder.com/150/ef4444/ffffff?text=Image+2'
-                    ]
-                },
-                {
-                    type: 'images',
-                    images: [
-                        'https://via.placeholder.com/150/10b981/ffffff?text=Image+1',
-                        'https://via.placeholder.com/150/f59e0b/ffffff?text=Image+2'
-                    ]
-                },
-                {
-                    type: 'colors',
-                    mainColor: '#3b82f6',
-                    oddColor: '#f43f5e'
-                }
-            ],
-            currentQuestionIndex: 0
-        };
-
-        // Initialize Game
-        function initGame() {
-            const grid = document.getElementById('gameGrid');
-            grid.innerHTML = '';
-            
-            const currentQuestion = gameState.questions[gameState.currentQuestionIndex];
-            gameState.mode = currentQuestion.type;
-
-            if (gameState.mode === 'colors') {
-                gameState.mainColor = currentQuestion.mainColor;
-                gameState.oddColor = currentQuestion.oddColor;
-                initColorGame(grid);
-            } else {
-                gameState.images = currentQuestion.images;
-                initImageGame(grid);
-            }
-        }
-
-        // Initialize Color Game
-        function initColorGame(grid) {
-            const mainColor = gameState.mainColor;
-            const oddColor = gameState.oddColor;
-            const oddPosition = Math.floor(Math.random() * 4);
-            
-            for (let i = 0; i < 4; i++) {
-                const card = createCard();
-                card.style.backgroundColor = i === oddPosition ? oddColor : mainColor;
-                card.setAttribute('data-correct', i === oddPosition ? 'true' : 'false');
-                card.onclick = () => handleCardClick(card);
-                grid.appendChild(card);
-            }
-        }
-
-        // Initialize Image Game
-        function initImageGame(grid) {
-            if (gameState.images.length >= 2) {
-                const oddPosition = Math.floor(Math.random() * 4);
-                
-                for (let i = 0; i < 4; i++) {
-                    const card = createCard();
-                    const img = document.createElement('img');
-                    const imageIndex = i === oddPosition ? 1 : 0;
-                    img.src = gameState.images[imageIndex];
-                    img.alt = `Card ${i + 1}`;
-                    card.appendChild(img);
-                    card.setAttribute('data-correct', i === oddPosition ? 'true' : 'false');
-                    card.onclick = () => handleCardClick(card);
-                    grid.appendChild(card);
-                }
-            } else {
-                console.error('Not enough images to initialize the game.');
-            }
-        }
-
-        // Create Card Element
-        function createCard() {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.setAttribute('role', 'button');
-            card.setAttribute('tabindex', '0');
-            return card;
-        }
-
-        // Handle Card Click
-        function handleCardClick(card) {
-            const isCorrect = card.getAttribute('data-correct') === 'true';
-            showFeedback(isCorrect);
-            highlightCard(card);
-            
-            // Delay before resetting
-            setTimeout(() => {
-                if (isCorrect) {
-                    gameState.currentQuestionIndex = (gameState.currentQuestionIndex + 1) % gameState.questions.length;
-                }
-                resetGame();
-            }, 1500);
-        }
-
-        // Show Feedback
-        function showFeedback(isCorrect) {
-            const feedback = document.getElementById('feedback');
-            feedback.style.display = 'block';
-            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
-            feedback.textContent = isCorrect ? 'Correct! Well done! 🎉' : 'Try again! 🔄';
-        }
-
-        // Highlight Selected Card
-        function highlightCard(card) {
-            if (gameState.selectedCard) {
-                gameState.selectedCard.classList.remove('selected');
-            }
-            card.classList.add('selected');
-            gameState.selectedCard = card;
-        }
-
-        // Reset Game
-        function resetGame() {
-            const feedback = document.getElementById('feedback');
-            feedback.style.display = 'none';
-            
-            if (gameState.selectedCard) {
-                gameState.selectedCard.classList.remove('selected');
-                gameState.selectedCard = null;
-            }
-            
-            initGame();
-        }
-
-        // Toggle Settings Modal
-        function toggleSettings() {
-            const modal = document.getElementById('settingsModal');
-            modal.classList.toggle('active');
-            
-            if (modal.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Switch Between Tabs
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-                btn.setAttribute('aria-selected', 'false');
-            });
-            const activeBtn = document.querySelector(`[onclick="switchTab('${tab}')"]`);
-            activeBtn.classList.add('active');
-            activeBtn.setAttribute('aria-selected', 'true');
-            
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(`${tab}Tab`).classList.add('active');
-        }
-
-        // Apply Color Settings
-        function applyColors() {
-            gameState.mode = 'colors';
-            gameState.mainColor = document.getElementById('mainColor').value;
-            gameState.oddColor = document.getElementById('oddColor').value;
-            toggleSettings();
-            initGame();
-        }
-
-        // Trigger File Input
-        function triggerFileInput() {
-            document.getElementById('fileInput').click();
-        }
-
-        // Handle Image Upload
-        function handleImageUpload(event) {
-            const files = Array.from(event.target.files);
-            const validFiles = files.filter(file => file.type.startsWith('image/'));
-            
-            if (validFiles.length >= 2) {
-                gameState.images = validFiles;
-                const uploadArea = document.getElementById('imageUpload');
-                uploadArea.style.borderColor = '#2563eb';
-                uploadArea.querySelector('.upload-text').textContent = `${validFiles.length} images selected`;
-                console.log('Uploaded Images:', gameState.images);
-            } else {
-                alert('Please select at least 2 images');
-                event.target.value = '';
-            }
-        }
-
-        // Apply Image Settings
-        function applyImages() {
-            if (gameState.images.length >= 2) {
-                gameState.mode = 'images';
-                toggleSettings();
-                initGame();
-            } else {
-                alert('Please upload at least 2 images before applying');
-            }
-        }
-
-        // Handle Keyboard Navigation
-        function handleKeyPress(event) {
-            if (event.key === 'Escape' && document.getElementById('settingsModal').classList.contains('active')) {
-                toggleSettings();
-            }
-        }
-
-        // Add Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            initGame();
-            document.addEventListener('keydown', handleKeyPress);
-        });
-
-        // Handle Drag and Drop for Images
-        const imageUpload = document.getElementById('imageUpload');
+    <!-- Teacher Page -->
+    <div id="teacherPage" class="page">
+        <h1>Create Your Own Activity 🎨</h1>
         
-        imageUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imageUpload.style.borderColor = '#2563eb';
-            imageUpload.style.backgroundColor = '#f8fafc';
-        });
-
-        imageUpload.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            imageUpload.style.borderColor = '#cbd5e1';
-            imageUpload.style.backgroundColor = 'transparent';
-        });
-
-        imageUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const files = Array.from(e.dataTransfer.files);
+        <div class="teacher-form">
+            <div id="questionForms">
+                <!-- Question 1 -->
+                <div class="question-block">
+                    <h3>Question 1</h3>
+                    <input type="file" accept="image/*" multiple onchange="previewImages(this, 0)" />
+                    <div class="preview-row"></div>
+                    <select onchange="setCorrectAnswer(0, this.value)">
+                        <option value="">Select odd one out</option>
+                        <option value="0">Image 1</option>
+                        <option value="1">Image 2</option>
+                        <option value="2">Image 3</option>
+                        <option value="3">Image 4</option>
+                    </select>
+                </div>
+                
+                <!-- Question 2 -->
+                <div class="question-block">
+                    <h3>Question 2</h3>
+                    <input type="file" accept="image/*" multiple onchange="previewImages(this, 1)" />
+                    <div class="preview-row"></div>
+                    <select onchange="setCorrectAnswer(1, this.value)">
+                        <option value="">Select odd one out</option>
+                        <option value="0">Image 1</option>
+                        <option value="1">Image 2</option>
+                        <option value="2">Image 3</option>
+                        <option value="3">Image 4</option>
+                    </select>
+                </div>
+                
+                <!-- Question 3 -->
+                <div class="question-block">
+                    <h3>Question 3</h3>
+                    <input type="file" accept="image/*" multiple onchange="previewImages(this, 2)" />
+                    <div class="preview-row"></div>
+                    <select onchange="setCorrectAnswer(2, this.value)">
+                        <option value="">Select odd one out</option>
+                        <option value="0">Image 1</option>
+                        <option value="1">Image 2</option>
+                        <option value="2">Image 3</option>
+                        <option value="3">Image 4</option>
+                    </select>
+                </div>
+                
+                <!-- Question 4 -->
+                <div class="question-block">
+                    <h3>Question 4</h3>
+                    <input type="file" accept="image/*" multiple onchange="previewImages(this, 3)" />
+                    <div class="preview-row"></div>
+                    <select onchange="setCorrectAnswer(3, this.value)">
+                        <option value="">Select odd one out</option>
+                        <option value="0">Image 1</option>
+                        <option value="1">Image 2</option>
+                        <option value="2">Image 3</option>
+                        <option value="3">Image 4</option>
+                    </select>
+                </div>
+            </div>
             
-            if (files.length >= 2 && files.every(file => file.type.startsWith('image/'))) {
-                gameState.images = files;
-                imageUpload.style.borderColor = '#2563eb';
-                imageUpload.querySelector('.upload-text').textContent = `${files.length} images selected`;
+            <button onclick="saveAndPreview()">Preview Activity</button>
+            <button onclick="showGamePage()">Back to Game</button>
+        </div>
+    </div>
+
+    <audio id="correctSound" src="/api/placeholder/audio/correct" preload="auto"></audio>
+    <audio id="incorrectSound" src="/api/placeholder/audio/incorrect" preload="auto"></audio>
+
+    <script>
+        let customQuestions = [];
+        let correctAnswers = [];
+        
+        function showTeacherPage() {
+            document.getElementById('gamePage').classList.remove('active');
+            document.getElementById('teacherPage').classList.add('active');
+        }
+        
+        function showGamePage() {
+            document.getElementById('teacherPage').classList.remove('active');
+            document.getElementById('gamePage').classList.add('active');
+        }
+        
+        function checkAnswer(element, rowIndex, correctIndex) {
+            const boxes = element.parentElement.children;
+            const clickedIndex = Array.from(boxes).indexOf(element);
+            
+            // Remove previous feedback marks
+            element.parentElement.querySelectorAll('.feedback-mark').forEach(mark => mark.remove());
+            
+            // Create and add feedback mark
+            const mark = document.createElement('div');
+            mark.className = 'feedback-mark';
+            
+            if (clickedIndex === correctIndex) {
+                mark.classList.add('correct-mark');
+                mark.innerHTML = '✓';
+                document.getElementById('correctSound').play();
             } else {
-                alert('Please drop at least 2 image files');
+                mark.classList.add('wrong-mark');
+                mark.innerHTML = '✗';
+                document.getElementById('incorrectSound').play();
             }
             
-            imageUpload.style.backgroundColor = 'transparent';
-        });
+            element.appendChild(mark);
+        }
+        
+        function previewImages(input, questionIndex) {
+            if (input.files.length !== 4) {
+                alert('Please select exactly 4 images');
+                return;
+            }
+            
+            const previewRow = input.parentElement.querySelector('.preview-row');
+            previewRow.innerHTML = '';
+            
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.createElement('div');
+                    preview.className = 'preview-box';
+                    preview.style.backgroundImage = `url(${e.target.result})`;
+                    previewRow.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            customQuestions[questionIndex] = Array.from(input.files);
+        }
+        
+        function setCorrectAnswer(questionIndex, value) {
+            correctAnswers[questionIndex] = parseInt(value);
+        }
+        
+        function saveAndPreview() {
+            if (customQuestions.length !== 4 || correctAnswers.length !== 4) {
+                alert('Please complete all questions and select correct answers');
+                return;
+            }
+            
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.innerHTML = '';
+            
+            customQuestions.forEach((files, questionIndex) => {
+                const row = document.createElement('div');
+                row.className = 'question-row';
+                
+                files.forEach((file, imageIndex) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const box = document.createElement('div');
+                        box.className = 'color-box';
+                        box.style.backgroundImage = `url(${e.target.result})`;
+                        box.style.backgroundSize = 'cover';
+                        box.onclick = function() { 
+                            checkAnswer(this, questionIndex, correctAnswers[questionIndex]); 
+                        };
+                        row.appendChild(box);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                
+                gameContainer.appendChild(row);
+            });
+            
+            showGamePage();
+        }
     </script>
 </body>
-</html>
+    </html>
